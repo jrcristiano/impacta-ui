@@ -70,12 +70,22 @@ export default function Index() {
   };
 
   const handleBuscar = (event) => {
-    //
+    setBuscar(event.target.value);
+  
+    if (event.target.value) {
+      return getUsuarios({
+        buscar: event.target.value,
+        school: escolaSelecionada,
+        role: perfilSelecionado,
+      });
+    }
+
+    return getUsuarios();
   };
 
-  const getUsuarios = async () => {
+  const getUsuarios = async (params) => {
     try {
-      const { data } = await userService.getAll();
+      const { data } = await userService.getAll(params);
       setUsuarios(data);
     } catch (error) {
       handleAlertMessage('Não foi possível carregar os usuários.', 'error');
@@ -84,27 +94,39 @@ export default function Index() {
 
   const getEscolas = async () => {
     try {
-      const {data} = await schoolService.getNameEscolas();
-      const escolas = data.map(escola => escola.id + ' - ' + escola.name);
-      
-      setEscolas(escolas);
+      const { data } = await schoolService.getNameEscolas();
+      setEscolas(data);
     } catch (error) {
       handleAlertMessage('Não foi possível carregar as escolas.', 'error');
     }
   }
 
+  const handleEscolaSelecionada = (event) => {
+    setEscolaSelecionada(event.target.value);
+  
+    if (event.target.value) {
+      return getUsuarios({
+        buscar,
+        school: event.target.value,
+        role: perfilSelecionado,
+      });
+    }
+
+    return getUsuarios();
+  };
+
   const handlePerfilSelecionado = (event) => {
     setPerfilSelecionado(event.target.value);
   
     if (event.target.value) {
-      return getEscolas({
+      return getUsuarios({
         buscar,
-        segmentos: perfilSelecionado,
-        perfil: event.target.value,
+        school: escolaSelecionada,
+        role: event.target.value,
       });
     }
 
-    return getEscolas();
+    return getUsuarios();
   };
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -123,6 +145,22 @@ export default function Index() {
       fontSize: 14,
     },
   }));
+
+  const handleDestroy = async (id) => {
+    try {
+      const question = 'Ao confirmar, todos os dados vinculados também serão removidos. Deseja continuar?';
+      if (confirm(question)) {
+        await userService.delete(id);
+
+        const filterUsuarios = usuarios.filter(usuario => usuario.id !== id);
+        setUsuarios(filterUsuarios);
+
+        handleAlertMessage('Usuário removido com sucesso!', 'success');
+      }
+    } catch (error) {
+      handleAlertMessage('Não foi possível remover usuário.', 'error');
+    }
+  }
 
   useEffect(() => {
     getEscolas();
@@ -147,7 +185,7 @@ export default function Index() {
             </Typography>
           </div>
           <div>
-            <Button onClick={() => router.push('/escolas/nova')}
+            <Button onClick={() => router.push('/usuarios/novo')}
               className="background-blue button-rounded" variant="contained">
               <AddIcon /> Novo usuário
             </Button>
@@ -161,7 +199,7 @@ export default function Index() {
                 md={12}
                 lg={6}>
               <TextField value={buscar}
-                autoComplete="off"
+                  autoComplete="off"
                   onChange={handleBuscar}
                   InputProps={{
                     endAdornment: (
@@ -183,12 +221,18 @@ export default function Index() {
               lg={3}>
               <Item elevation={0}>
                 <FormControl fullWidth>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={escolas}
-                    renderInput={(params) => <TextField {...params} label="Escolas" />}
-                  />
+                  <InputLabel id="demo-simple-select-label">Escolas</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={escolaSelecionada}
+                    label="Escolas"
+                    onChange={handleEscolaSelecionada}
+                  >
+                    {escolas.map((escola) => (
+                      <MenuItem key={escola.id} value={escola.id}>{escola.id} - {escola.name}</MenuItem>
+                    ))}
+                  </Select>
                 </FormControl>
               </Item>
             </Grid>
@@ -251,14 +295,18 @@ export default function Index() {
                         style={{marginRight: 10, backgroundColor: '#1A4287'}}>
                         <VisibilityIcon />
                       </Button>
-                      <Button variant="contained" color="error" onClick={() => {}}>
+                      <Button variant="contained" color="error" onClick={() => handleDestroy(usuario.id)}>
                         <DeleteIcon />
                       </Button>
                       
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
-                
+                {!usuarios.length && (
+                  <StyledTableRow>
+                    <StyledTableCell colSpan={8} align="center">Nenhum usuário encontrado...</StyledTableCell>
+                  </StyledTableRow>
+                )}                
               </TableBody>
             </Table>
           </TableContainer>

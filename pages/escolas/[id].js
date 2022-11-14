@@ -43,7 +43,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export default function edit() {
+export default function Editar() {
   const router = useRouter();
 
   const [escola, setEscola] = useState({});

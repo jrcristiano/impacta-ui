@@ -6,13 +6,13 @@ export default {
     const segmentos = params.segmentos || [];
     const status = params.status || '';
 
-    let queryString = `/schools?search=${buscar}&status=${status}&relations=true&eager=true`;
+    let url = `/schools?search=${buscar}&status=${status}&relations=true&eager=true`;
     
     for (const segmento of segmentos) {
-      queryString += `&segmentos[]=${segmento}`;
+      url += `&segmentos[]=${segmento}`;
     }
     
-    return await api.get(queryString);
+    return await api.get(url);
   },
 
   async getNameEscolas() {
