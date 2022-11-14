@@ -1,0 +1,138 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+.MuiPaper-root {
+  border-right: 0px;
+}
+
+.container {
+  padding: 0 2rem;
+}
+
+.button-rounded {
+  border-radius: 64px;
+  padding: 8px 24px;
+}
+
+.borderTopYellow {
+  border-top: 6px solid #FAA41F;
+}
+
+.appBar {
+  background-color: #fff;
+  color: #333333;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.iconButton {
+  color: #323232;
+}
+
+.fontBold {
+  font-weight: bold;
+}
+
+.background-blue {
+  background-color: #1B458D;
+}
+
+.titleMain {
+  font-weight: bold; 
+  padding-bottom: 15px;
+}
+
+.my-badge-blue {
+  background-color: rgb(227, 238, 255);
+  color: rgb(27, 69, 141);
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+.my-badge-dark-blue {
+  background-color: rgb(27, 69, 141);
+  color: #fff;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+.my-badge-active {
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    height: 34px;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 18px;
+    background: rgb(177, 255, 186);
+    color: rgb(50, 151, 61);
+}
+
+.my-badge-inactive {
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    height: 34px;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 18px;
+    background: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.justify-content-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.justify-content-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.w-100 {
+  width: 100%;
+}
