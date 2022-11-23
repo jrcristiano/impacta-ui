@@ -26,8 +26,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-import schoolService from '../../services/school-service';
-import segmentService from '../../services/segment-service';
+import schoolService from '../../services/school';
+import segmentService from '../../services/segment';
 
 import { useSnackbar } from 'notistack';
 

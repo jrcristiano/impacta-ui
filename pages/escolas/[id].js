@@ -12,8 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Head from 'next/head';
 import { useSnackbar } from 'notistack';
 
-import segmentService from '../../services/segment-service';
-import schoolService from '../../services/school-service';
+import segmentService from '../../services/segment';
+import schoolService from '../../services/school';
 import SchoolForm from '../../components/forms/school-form';
 import date from '../../helpers/date';
   
@@ -68,8 +68,8 @@ export default function Editar() {
 
   const getEscola = async () => {
     try {
-      const res = await schoolService.show(router.query.id);
-      setEscola(res.data);
+      const { data } = await schoolService.show(router.query.id);
+      setEscola(data);
     } catch (error) {
       handleAlertMessage('Não foi possível carregar a escola.', 'error');
     }
@@ -115,7 +115,9 @@ export default function Editar() {
   }
 
   useEffect(() => {
-    if (!router.query.id) return;
+    if (!router.query.id) {
+      return; 
+    }
     
     getEscola();
     getSegmentos();
@@ -159,9 +161,9 @@ export default function Editar() {
               '& .MuiTabs-indicator': { backgroundColor: '#1A4287' },
               '& .MuiTab-root': { color: '#1D1D1D', },
               '& .Mui-selected': { color: '#1A4287' },
-              }}
-            value={tabIndex} o
-            nChange={handleTabChange}>
+            }}
+            value={tabIndex}
+            onChange={handleTabChange}>
             <Tab label="Edição de escola" />
           </Tabs>
         </Box>
@@ -169,7 +171,7 @@ export default function Editar() {
           {tabIndex === 0 && (
             <Box>
               <div>
-                <SchoolForm escola={escola} handleSubmit={handleUpdate} segmentos={segmentos} />
+                <SchoolForm escola={escola} handleSubmit={handleUpdate} />
               </div>
             </Box>
           )}

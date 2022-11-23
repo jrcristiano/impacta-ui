@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import {
   Button,
-  Checkbox,
   FormControl,
   Grid,
   InputAdornment,
   InputLabel,
-  ListItemText,
   MenuItem,
-  OutlinedInput,
   Select,
   Table,
   TableContainer,
@@ -17,8 +14,6 @@ import {
   TableRow,
   Typography,
   TableBody,
-  StyledTableRow,
-  Autocomplete,
   TextField
 } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -28,11 +23,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/router';
 import { Box } from "@mui/system";
 import Search from "@mui/icons-material/Search";
-import { styled } from '@mui/material/styles';;
+import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { useSnackbar } from "notistack";
-import schoolService from "../../services/school-service";
-import userService from "../../services/user-service";
+import schoolService from "../../services/school";
+import userService from "../../services/user";
 import date from "../../helpers/date";
 
 export default function Index() {
@@ -43,7 +38,7 @@ export default function Index() {
   const [buscar, setBuscar] = useState('');
 
   const [escolas, setEscolas] = useState([]);
-  const [escolaSelecionada, setEscolaSelecionada] = useState('');
+  const [escolaSelecionada, setEscolaSelecionada] = useState('TODOS');
 
   const [perfilSelecionado, setPerfilSelecionado] = useState('TODOS');
 
@@ -229,6 +224,7 @@ export default function Index() {
                     label="Escolas"
                     onChange={handleEscolaSelecionada}
                   >
+                    <MenuItem value={'TODOS'}>Todos</MenuItem>
                     {escolas.map((escola) => (
                       <MenuItem key={escola.id} value={escola.id}>{escola.id} - {escola.name}</MenuItem>
                     ))}
@@ -254,7 +250,8 @@ export default function Index() {
                     value={perfilSelecionado}
                     label="Status"
                   >
-                    <MenuItem value={'TODOS'}>Todos</MenuItem>
+                    <MenuItem value="TODOS">Todos</MenuItem>
+                    <MenuItem value={'ADMIN'}>Administrador</MenuItem>
                     <MenuItem value={'ALUNO'}>Aluno</MenuItem>
                     <MenuItem value={'PROFESSOR'}>Professor</MenuItem>
                     <MenuItem value={'COORDENADOR'}>Coordenador</MenuItem>
@@ -291,7 +288,7 @@ export default function Index() {
                     <StyledTableCell align="center">{date(usuario.created_at)}</StyledTableCell>
                     <StyledTableCell align="center">
                       <Button variant="contained"
-                        onClick={() => router.push(`/escolas/${usuario.id}`)}
+                        onClick={() => router.push(`/usuarios/${usuario.id}`)}
                         style={{marginRight: 10, backgroundColor: '#1A4287'}}>
                         <VisibilityIcon />
                       </Button>

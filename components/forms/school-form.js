@@ -12,6 +12,9 @@ import {
   Button,
 } from '@mui/material';
 
+import segmentService from '../../services/segment';
+import { useSnackbar } from 'notistack';
+
 /* icons */
 import CheckIcon from '@mui/icons-material/Check';
 import { useTheme } from '@mui/material/styles';
@@ -37,93 +40,148 @@ function getStyles(segmento, segmentosSelecionados, theme) {
 }
 
 export default function SchoolForm(props) {
-  const theme = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const [name, setName] = useState('');
-  const [city, setCity] = useState('');
-  const [phone, setPhone] = useState('');
-  const [cnpj, setCnpj] = useState('');
-  const [description, setDescription] = useState('');
-  const [segmentosSelecionados, setSegmentosSelecionados] = useState([]);
-  const [statusSelecionado, setStatusSelecionado] = useState('');
+  const theme = useTheme();
+  const [segmentos, setSegmentos] = useState([]);
+  const [state, setState] = useState({
+    name: '',
+    city: '',
+    phone: '',
+    cnpj: '',
+    description: '',
+    segmentosSelecionados: [],
+    statusSelecionado: '',
+  });
+
+  const handleState = (event) => {
+    setState({
+      ...state,
+      [event.target.name]: event.target.value
+    });
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     
     props.handleSubmit({
-      name,
-      city,
-      segments: segmentosSelecionados,
-      status: statusSelecionado,
-      phone,
-      cnpj,
-      description
+      name: state.name,
+      city: state.city,
+      segments: state.segmentosSelecionados,
+      status: state.statusSelecionado,
+      phone: state.phone,
+      cnpj: state.cnpj,
+      description: state.description
     });
   }
 
+  const getSegmentos = async () => {
+    try {
+      const { data } = await segmentService.getAll();
+      const segmentos = data.map((segmento) => segmento.name);
+      setSegmentos(segmentos);
+    } catch (error) {
+      enqueueSnackbar('Não foi possível carregar os segmentos.', { variant: 'error' });
+    }
+  }
   useEffect(() => {
+    getSegmentos();
+
     const { escola } = props;
-    if (!escola) {
+    if (!escola.id) {
       return;
     }
 
     if (!escola.segments) {
       return;
     }
-      
-    setName(escola.name || '');
-    setCity(escola.city || '');
-    setPhone(escola.phone || '');
-    setCnpj(escola.cnpj || '');
-    setDescription(escola.description || '');
-    setStatusSelecionado(escola.status || '');
     
     const segments = escola.segments.map((segment) => segment.name);
-    setSegmentosSelecionados(segments || []);
+    setState({
+      name: escola.name || '',
+      city: escola.city || '',
+      phone: escola.phone || '',
+      cnpj: escola.cnpj || '',
+      statusSelecionado: escola.status || '',
+      segmentosSelecionados: segments || []
+    });
     
-  }, [props.escola])
+  }, [props.escola.id]);
 
   return (
     <form onSubmit={handleSubmit}>
       <FormControl fullWidth>
-        <Grid style={{marginTop: 5}} container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid style={{ marginTop: 5 }}
+          container
+          rowSpacing={3}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={6}>
-            
-            <TextField value={name} onChange={(event) => setName(event.target.value)} fullWidth label="Nome" id="name" />
+            <TextField value={state.name}
+              onChange={handleState}
+              fullWidth
+              label="Nome"
+              id="name"
+              name="name" />
           </Grid>
           <Grid item xs={6}>
-            <TextField value={city} onChange={(event) => setCity(event.target.value)} fullWidth label="Cidade" id="city" />
+            <TextField value={state.city}
+              onChange={handleState}
+              fullWidth
+              label="Cidade"
+              id="city"
+              name="city" />
           </Grid>
           <Grid item xs={4}>
-            <TextField value={phone} onChange={(event) => setPhone(event.target.value)} fullWidth label="Telefone" id="phone" />
+            <TextField value={state.phone}
+              onChange={handleState}
+              fullWidth
+              label="Telefone"
+              id="phone"
+              name="phone" />
           </Grid>
           <Grid item xs={4}>
-            <TextField value={cnpj} onChange={(event) => setCnpj(event.target.value)} fullWidth label="CNPJ" id="cnpj" />
+            <TextField value={state.cnpj}
+              onChange={handleState}
+              fullWidth
+              label="CNPJ"
+              id="cnpj"
+              name="cnpj" />
           </Grid>
           <Grid item xs={4}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Status</InputLabel>
+              <InputLabel id="demo-simple-select-label">
+                Status
+              </InputLabel>
               <Select
+                name="statusSelecionado"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={statusSelecionado}
+                value={state.statusSelecionado}
                 label="Status"
-                onChange={(event) => setStatusSelecionado(event.target.value)}
+                onChange={handleState}
               >
-              <MenuItem selected value="ATIVO">Ativo</MenuItem>
-              <MenuItem value="INATIVO">Inativo</MenuItem>
+                <MenuItem selected
+                  value="ATIVO">
+                  Ativo
+                </MenuItem>
+                <MenuItem value="INATIVO">
+                  Inativo
+                </MenuItem>
             </Select>
           </FormControl>
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="demo-multiple-chip-label">Segmentos</InputLabel>
+              <InputLabel id="demo-multiple-chip-label">
+                Segmentos
+              </InputLabel>
               <Select fullWidth
+                name="segmentosSelecionados"
                 labelId="demo-multiple-chip-label"
                 id="demo-multiple-chip"
                 multiple
-                value={segmentosSelecionados}
-                onChange={(event) => setSegmentosSelecionados(event.target.value)}
+                value={state.segmentosSelecionados}
+                onChange={handleState}
                 input={<OutlinedInput id="select-multiple-chip" label="Segmentos" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -134,12 +192,12 @@ export default function SchoolForm(props) {
                 )}
                 MenuProps={MenuProps}
               >
-                {props.segmentos.map((segmento, key) => {
+                {segmentos.map((segmento, key) => {
                   return (
                     <MenuItem
                       key={key}
                       value={segmento}
-                      style={getStyles(segmento, segmentosSelecionados, theme)}
+                      style={getStyles(segmento, state.segmentosSelecionados, theme)}
                     >
                       {segmento}
                     </MenuItem>
@@ -150,8 +208,9 @@ export default function SchoolForm(props) {
           </Grid>
 
           <Grid item xs={12}>
-            <TextField onChange={(event) => setDescription(event.target.value)}
-              value={description || ''}
+            <TextField onChange={handleState}
+              name="description"
+              value={state.description}
               fullWidth
               id="outlined-multiline-static"
               label="Descrição"

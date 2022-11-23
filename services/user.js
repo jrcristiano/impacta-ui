@@ -18,6 +18,15 @@ export default {
 
     return await api.get(url);
   },
+
+  async show(id) {
+    return await api.get(`/users/${id}?relations=true`)
+  },
+
+  async store(data) {
+    return await api.post('/users', data);
+  },
+
   async delete(id) {
     return await api.delete(`/users/${id}`);
   }

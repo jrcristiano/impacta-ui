@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   Typography,
   Box,
@@ -6,26 +5,17 @@ import {
   Tabs,
   Button
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { useSnackbar } from 'notistack';
-
 import SchoolForm from '../../components/forms/school-form';
-import schoolService from '../../services/school-service';
-import segmentService from '../../services/segment-service';
+import schoolService from '../../services/school';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 export default function Nova() {
   const router = useRouter();
-
-  const [segmentos, setSegmentos] = useState([]);
-  const [tabIndex, setTabIndex] = useState(0);
-
-  const handleTabChange = (event, newTabIndex) => {
-    setTabIndex(newTabIndex);
-  };
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -45,23 +35,9 @@ export default function Nova() {
       router.push('/escolas');
       handleAlertMessage('Escola cadastrada com sucesso.', 'success');
     } catch ({response}) {
-      handleAlertMessage(response.data.message, 'error')
+      handleAlertMessage(response.data.message, 'error');
     }
   }
-
-  const getSegmentos = async () => {
-    try {
-      const { data } = await segmentService.getAll();
-      const segmentos = data.map((segmento) => segmento.name);
-      setSegmentos(segmentos);
-    } catch (error) {
-      handleAlertMessage('Não foi possível carregar os segmentos.', 'error');
-    }
-  }
-
-  useEffect(() => {
-    getSegmentos();
-  }, []);
 
   return (
     <>
@@ -84,23 +60,22 @@ export default function Nova() {
             </Typography>
         </div>
       </div>
-        <Box className="sm-w-100" style={{borderBottom: '1px solid #bbb'}}>
+        <Box className="sm-w-100"
+          style={{ borderBottom: '1px solid #bbb' }}>
           <Tabs sx={{
               '& .MuiTabs-indicator': { backgroundColor: '#1A4287' },
               '& .MuiTab-root': { color: '#1D1D1D', },
               '& .Mui-selected': { color: '#1A4287' },
-            }} value={tabIndex} onChange={handleTabChange}>
+            }} value={0}>
             <Tab label="Cadastro de escola" />
           </Tabs>
         </Box>
         <Box sx={{ paddingTop: 1 }}>
-          {tabIndex === 0 && (
-            <Box>
-                <div>
-                  <SchoolForm handleSubmit={handleStore} segmentos={segmentos} />
-                </div>
-            </Box>
-          )}
+          <Box>
+            <div>
+              <SchoolForm handleSubmit={handleStore} />
+            </div>
+          </Box>
         </Box>
       </Box>
     </>

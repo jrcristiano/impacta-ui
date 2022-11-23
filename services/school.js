@@ -2,21 +2,25 @@ import api from "../boot/api";
 
 export default {
   async getAll(params = {}) {
-    const buscar = params.buscar || '';
-    const segmentos = params.segmentos || [];
-    const status = params.status || '';
+    let url = `/schools?relations=true&eager=true`;
+    if (params.buscar) {
+      url = url.concat(`&search=${params.buscar}`);
+    }
 
-    let url = `/schools?search=${buscar}&status=${status}&relations=true&eager=true`;
+    if (params.status) {
+      url = url.concat(`&status=${params.status}`)
+    }
     
+    const segmentos = params.segmentos || [];
     for (const segmento of segmentos) {
-      url += `&segmentos[]=${segmento}`;
+      url += url.concat(`&segmentos[]=${segmento}`);
     }
     
     return await api.get(url);
   },
 
   async getNameEscolas() {
-    return await api.get('/schools?columns[]=name&order=ASC&sort[]=name');
+    return await api.get('/schools?columns[]=name');
   },
   
   store(data) {
