@@ -27,6 +27,10 @@ export default {
     return await api.post('/users', data);
   },
 
+  async update(data, id) {
+    return await api.put(`/users/${id}`, data); 
+  },
+
   async delete(id) {
     return await api.delete(`/users/${id}`);
   }

@@ -88,7 +88,7 @@ export default function SchoolForm(props) {
     getSegmentos();
 
     const { escola } = props;
-    if (!escola.id) {
+    if (!escola?.id) {
       return;
     }
 
@@ -106,7 +106,7 @@ export default function SchoolForm(props) {
       segmentosSelecionados: segments || []
     });
     
-  }, [props.escola.id]);
+  }, [props?.escola?.id]);
 
   return (
     <form onSubmit={handleSubmit}>

@@ -39,7 +39,7 @@ export default function UserForm(props) {
     getEscolas();
 
     const { usuario } = props;
-    if (!usuario.id) {
+    if (!usuario?.id) {
       return;
     }
 
@@ -52,7 +52,7 @@ export default function UserForm(props) {
       password: ''
     });
 
-  }, [props.usuario]);
+  }, [props.usuario?.id]);
 
   return (
     <form onSubmit={handleSubmit}>

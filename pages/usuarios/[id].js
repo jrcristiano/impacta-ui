@@ -44,11 +44,9 @@ export default function Editar() {
 
   const handleUpdate = async (data) => {
     try {
-      console.log(data);
-      // await userService.store(data);
-      // handleAlertMessage('Usuário cadastrado com sucesso!', 'success');
-      // return router.push('/usuarios');
-      console.log('Usuário atualizado!');
+      await userService.update(data, router.query.id);
+      handleAlertMessage('Usuário editado com sucesso!', 'success');
+      return router.push('/usuarios');
     } catch ({response}) {
       handleAlertMessage(response.data.message, 'error');
     }
