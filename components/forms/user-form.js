@@ -39,7 +39,11 @@ export default function UserForm(props) {
     getEscolas();
 
     const { usuario } = props;
-    if (!usuario?.id) {
+    if (!usuario) {
+      return;
+    }
+
+    if (!usuario.id) {
       return;
     }
 
@@ -52,7 +56,7 @@ export default function UserForm(props) {
       password: ''
     });
 
-  }, [props.usuario?.id]);
+  }, [props.usuario]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -108,6 +112,9 @@ export default function UserForm(props) {
                 name="role"
                 onChange={handleState}
               >
+                <MenuItem value="ADMIN">
+                  Administrador
+                </MenuItem>
                 <MenuItem value="COORDENADOR">
                   Coordenador
                 </MenuItem>

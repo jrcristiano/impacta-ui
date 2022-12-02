@@ -13,7 +13,7 @@ export default {
     
     const segmentos = params.segmentos || [];
     for (const segmento of segmentos) {
-      url += url.concat(`&segmentos[]=${segmento}`);
+      url = url.concat(`&segmentos[]=${segmento}`);
     }
     
     return await api.get(url);
